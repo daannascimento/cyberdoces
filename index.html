@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Controle de Gastos</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <h2>Controle de Gastos</h2>
+
+  <input id="valor" placeholder="Valor"><br><br>
+  
+  <select id="pessoa">
+    <option>Dan</option>
+    <option>Rafa</option>
+  </select><br><br>
+
+  <input id="categoria" placeholder="Categoria"><br><br>
+
+  <button onclick="salvar()">Salvar</button>
+
+  <h3>Gráfico</h3>
+  <canvas id="grafico"></canvas>
+
+<script>
+const supabase = supabase.createClient(
+  'SUA_URL',
+  'SUA_KEY'
+);
+
+async function salvar() {
+  const valor = document.getElementById('valor').value;
+  const pessoa = document.getElementById('pessoa').value;
+  const categoria = document.getElementById('categoria').value;
+
+  await supabase.from('gastos').insert([
+    { valor, pessoa, categoria }
+  ]);
+
+  alert('Salvo!');
+  carregarGrafico();
+}
+
+async function carregarGrafico() {
+  const { data } = await supabase.from('gastos').select('*');
+
+  let dan = 0;
+  let rafa = 0;
+
+  data.forEach(g => {
+    if (g.pessoa === 'Dan') dan += Number(g.valor);
+    if (g.pessoa === 'Rafa') rafa += Number(g.valor);
+  });
+
+  new Chart(document.getElementById('grafico'), {
+    type: 'pie',
+    data: {
+      labels: ['Dan', 'Rafa'],
+      datasets: [{
+        data: [dan, rafa]
+      }]
+    }
+  });
+}
+
+carregarGrafico();
+</script>
+
+</body>
+</html>
