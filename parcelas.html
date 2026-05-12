@@ -43,6 +43,7 @@
       background: white;
       border-radius: 10px;
       padding: 20px;
+      margin-bottom: 20px;
     }
 
     .valor {
@@ -70,6 +71,22 @@
     button {
       padding: 8px 12px;
       cursor: pointer;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    .status-aberto {
+      color: orange;
+      font-weight: bold;
+    }
+
+    .status-quitado {
+      color: green;
+      font-weight: bold;
     }
 
   </style>
@@ -125,6 +142,51 @@
 
 <div class="card">
 
+  <h3>Filtros</h3>
+
+  <select id="filtroPessoa" onchange="carregarParcelas()">
+
+    <option value="">Todas Pessoas</option>
+
+    <option value="Dan">Dan</option>
+
+    <option value="Rafa">Rafa</option>
+
+  </select>
+
+  <select id="filtroStatus" onchange="carregarParcelas()">
+
+    <option value="">Todos Status</option>
+
+    <option value="aberto">Abertos</option>
+
+    <option value="quitado">Quitados</option>
+
+  </select>
+
+</div>
+
+<div class="card">
+
+  <h3>Previsão Financeira</h3>
+
+  <table>
+
+    <thead>
+      <tr>
+        <th>Mês</th>
+        <th>Total Previsto</th>
+      </tr>
+    </thead>
+
+    <tbody id="tabelaPrevisao"></tbody>
+
+  </table>
+
+</div>
+
+<div class="card">
+
   <table>
 
     <thead>
@@ -156,9 +218,29 @@ const client = createClient(
 
 async function carregarParcelas() {
 
-  const { data, error } = await client
+  let query = client
     .from('gastos')
     .select('*');
+
+  const filtroPessoa =
+    document.getElementById('filtroPessoa')?.value;
+
+  const filtroStatus =
+    document.getElementById('filtroStatus')?.value;
+
+  if (filtroPessoa) {
+    query = query.eq('pessoa', filtroPessoa);
+  }
+
+  if (filtroStatus === 'aberto') {
+    query = query.eq('quitado', false);
+  }
+
+  if (filtroStatus === 'quitado') {
+    query = query.eq('quitado', true);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.log(error);
@@ -167,6 +249,7 @@ async function carregarParcelas() {
 
   atualizarTabela(data);
   atualizarCards(data);
+  atualizarPrevisao(data);
 }
 
 function atualizarTabela(data) {
@@ -196,7 +279,7 @@ function atualizarTabela(data) {
           R$ ${Number(gasto.valor_parcela || gasto.valor).toLocaleString('pt-BR')}
         </td>
 
-        <td>
+        <td class="${gasto.quitado ? 'status-quitado' : 'status-aberto'}">
           ${gasto.quitado ? 'Quitado' : 'Aberto'}
         </td>
 
@@ -224,13 +307,17 @@ function atualizarCards(data) {
   data.forEach(gasto => {
 
     if (gasto.quitado) {
+
       quitadas++;
+
     } else {
+
       abertas++;
 
       totalMensal += Number(
         gasto.valor_parcela || gasto.valor
       );
+
     }
 
   });
@@ -243,6 +330,58 @@ function atualizarCards(data) {
 
   document.getElementById('parcelasQuitadas').innerText =
     quitadas;
+}
+
+function atualizarPrevisao(data) {
+
+  const tabela =
+    document.getElementById('tabelaPrevisao');
+
+  tabela.innerHTML = '';
+
+  const previsao = {};
+
+  data.forEach(gasto => {
+
+    if (gasto.quitado) return;
+
+    const parcelasRestantes =
+      (gasto.parcelas || 1) -
+      (gasto.parcela_atual || 1) + 1;
+
+    const valor =
+      Number(gasto.valor_parcela || gasto.valor);
+
+    for (let i = 0; i < parcelasRestantes; i++) {
+
+      const dataBase = new Date();
+
+      dataBase.setMonth(dataBase.getMonth() + i);
+
+      const chave =
+        dataBase.toLocaleString('pt-BR', {
+          month: 'long',
+          year: 'numeric'
+        });
+
+      previsao[chave] =
+        (previsao[chave] || 0) + valor;
+    }
+
+  });
+
+  Object.entries(previsao)
+    .forEach(([mes, total]) => {
+
+      tabela.innerHTML += `
+        <tr>
+          <td>${mes}</td>
+          <td>
+            R$ ${total.toLocaleString('pt-BR')}
+          </td>
+        </tr>
+      `;
+    });
 }
 
 async function avancarParcela(id) {
@@ -260,7 +399,9 @@ async function avancarParcela(id) {
   let quitado = false;
 
   if (parcelaAtual >= data.parcelas) {
+
     parcelaAtual = data.parcelas;
+
     quitado = true;
   }
 
