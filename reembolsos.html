@@ -293,4 +293,51 @@ function atualizarGrafico(gastos, reembolsos) {
     }
 
   });
-```
+  
+
+  const saldoDan = totalDan - recebidoDan;
+  const saldoRafa = totalRafa - recebidoRafa;
+
+  const ctx = document.getElementById('grafico');
+
+  if (grafico) {
+    grafico.destroy();
+  }
+
+  grafico = new Chart(ctx, {
+
+    type: 'bar',
+
+    data: {
+
+      labels: [
+        'Dan Investido',
+        'Dan Recebido',
+        'Dan Saldo',
+        'Rafa Investido',
+        'Rafa Recebido',
+        'Rafa Saldo'
+      ],
+
+      datasets: [{
+        data: [
+          totalDan,
+          recebidoDan,
+          saldoDan,
+          totalRafa,
+          recebidoRafa,
+          saldoRafa
+        ]
+      }]
+
+    }
+
+  });
+}
+
+carregarDados();
+
+</script>
+
+</body>
+</html>
