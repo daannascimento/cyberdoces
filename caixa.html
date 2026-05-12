@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Fluxo de Caixa</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+
+    body {
+      font-family: Arial;
+      background: #f5f5f5;
+      padding: 20px;
+      margin: 0;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .menu {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .menu button {
+      width: auto;
+      padding: 10px 20px;
+      margin: 5px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .valor {
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      box-sizing: border-box;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #eee;
+    }
+
+    .entrada {
+      color: green;
+      font-weight: bold;
+    }
+
+    .saida {
+      color: red;
+      font-weight: bold;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<h1>Fluxo de Caixa</h1>
+
+<div class="menu">
+
+  <a href="index.html">
+    <button>Gastos</button>
+  </a>
+
+  <a href="reembolsos.html">
+    <button>Reembolsos</button>
+  </a>
+
+  <a href="parcelas.html">
+    <button>Parcelas</button>
+  </a>
+
+  <a href="caixa.html">
+    <button>Caixa</button>
+  </a>
+
+</div>
+
+<div class="grid">
+
+  <div class="card">
+
+    <h3>Entradas</h3>
+
+    <div class="valor entrada" id="totalEntradas">
+      R$ 0
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h3>Saídas</h3>
+
+    <div class="valor saida" id="totalSaidas">
+      R$ 0
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h3>Saldo Atual</h3>
+
+    <div class="valor" id="saldoAtual">
+      R$ 0
+    </div>
+
+  </div>
+
+</div>
+
+<div class="card">
+
+  <h3>Nova Movimentação</h3>
+
+  <select id="tipo">
+
+    <option value="entrada">
+      Entrada
+    </option>
+
+    <option value="saida">
+      Saída
+    </option>
+
+  </select>
+
+  <input id="categoria" placeholder="Categoria">
+
+  <input id="descricao" placeholder="Descrição">
+
+  <input id="valor" type="number" placeholder="Valor">
+
+  <select id="formaPagamento">
+
+    <option value="pix">PIX</option>
+
+    <option value="dinheiro">Dinheiro</option>
+
+    <option value="credito">Crédito</option>
+
+    <option value="debito">Débito</option>
+
+  </select>
+
+  <button onclick="salvarMovimentacao()">
+    Salvar Movimentação
+  </button>
+
+</div>
+
+<div class="card">
+
+  <h3>Movimentações</h3>
+
+  <table>
+
+    <thead>
+
+      <tr>
+        <th>Tipo</th>
+        <th>Categoria</th>
+        <th>Descrição</th>
+        <th>Forma</th>
+        <th>Valor</th>
+        <th>Data</th>
+      </tr>
+
+    </thead>
+
+    <tbody id="tabelaMovimentacoes"></tbody>
+
+  </table>
+
+</div>
+
+<div class="card">
+
+  <h3>Resumo Financeiro</h3>
+
+  <canvas id="grafico"></canvas>
+
+</div>
+
+<script>
+
+const { createClient } = supabase;
+
+const client = createClient(
+  'https://ewiejygqzrgrwhkielln.supabase.co',
+  'sb_publishable_yAeRrVsq2u0c3Sqv2-vg9g_669u8lLw'
+);
+
+let grafico;
+
+async function salvarMovimentacao() {
+
+  const tipo =
+    document.getElementById('tipo').value;
+
+  const categoria =
+    document.getElementById('categoria').value;
+
+  const descricao =
+    document.getElementById('descricao').value;
+
+  const valor =
+    document.getElementById('valor').value;
+
+  const formaPagamento =
+    document.getElementById('formaPagamento').value;
+
+  const { error } = await client
+    .from('movimentacoes')
+    .insert([
+      {
+        tipo,
+        categoria,
+        descricao,
+        valor,
+        forma_pagamento: formaPagamento
+      }
+    ]);
+
+  if (error) {
+
+    console.log(error);
+
+    alert('Erro ao salvar');
+
+    return;
+  }
+
+  alert('Movimentação salva!');
+
+  document.getElementById('categoria').value = '';
+  document.getElementById('descricao').value = '';
+  document.getElementById('valor').value = '';
+
+  carregarMovimentacoes();
+}
+
+async function carregarMovimentacoes() {
+
+  const { data, error } = await client
+    .from('movimentacoes')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+
+    console.log(error);
+
+    return;
+  }
+
+  atualizarTabela(data);
+  atualizarCards(data);
+  atualizarGrafico(data);
+}
+
+function atualizarTabela(data) {
+
+  const tabela =
+    document.getElementById('tabelaMovimentacoes');
+
+  tabela.innerHTML = '';
+
+  data.forEach(item => {
+
+    tabela.innerHTML += `
+      <tr>
+
+        <td class="${item.tipo}">
+          ${item.tipo}
+        </td>
+
+        <td>
+          ${item.categoria}
+        </td>
+
+        <td>
+          ${item.descricao || ''}
+        </td>
+
+        <td>
+          ${item.forma_pagamento}
+        </td>
+
+        <td>
+          R$ ${Number(item.valor).toLocaleString('pt-BR')}
+        </td>
+
+        <td>
+          ${new Date(item.created_at)
+            .toLocaleDateString('pt-BR')}
+        </td>
+
+      </tr>
+    `;
+
+  });
+
+}
+
+function atualizarCards(data) {
+
+  let entradas = 0;
+  let saidas = 0;
+
+  data.forEach(item => {
+
+    if (item.tipo === 'entrada') {
+
+      entradas += Number(item.valor);
+
+    } else {
+
+      saidas += Number(item.valor);
+
+    }
+
+  });
+
+  const saldo = entradas - saidas;
+
+  document.getElementById('totalEntradas').innerText =
+    'R$ ' + entradas.toLocaleString('pt-BR');
+
+  document.getElementById('totalSaidas').innerText =
+    'R$ ' + saidas.toLocaleString('pt-BR');
+
+  document.getElementById('saldoAtual').innerText =
+    'R$ ' + saldo.toLocaleString('pt-BR');
+}
+
+function atualizarGrafico(data) {
+
+  let entradas = 0;
+  let saidas = 0;
+
+  data.forEach(item => {
+
+    if (item.tipo === 'entrada') {
+
+      entradas += Number(item.valor);
+
+    } else {
+
+      saidas += Number(item.valor);
+
+    }
+
+  });
+
+  const ctx =
+    document.getElementById('grafico');
+
+  if (grafico) {
+    grafico.destroy();
+  }
+
+  grafico = new Chart(ctx, {
+
+    type: 'bar',
+
+    data: {
+
+      labels: [
+        'Entradas',
+        'Saídas'
+      ],
+
+      datasets: [{
+
+        data: [
+          entradas,
+          saidas
+        ]
+
+      }]
+
+    }
+
+  });
+
+}
+
+carregarMovimentacoes();
+
+</script>
+
+</body>
+</html>
