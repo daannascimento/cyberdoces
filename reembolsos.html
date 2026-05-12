@@ -1,0 +1,296 @@
+# Arquivo: reembolsos.html
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Reembolsos</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+
+    body {
+      font-family: Arial;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    .valor {
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      box-sizing: border-box;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background: black;
+      color: white;
+      border-radius: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #eee;
+    }
+
+    canvas {
+      margin-top: 20px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<h1>Controle de Reembolsos</h1>
+
+<div class="grid">
+
+  <div class="card">
+    <h2>Total Investido</h2>
+    <div class="valor" id="totalInvestido">
+      R$ 0
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Total Reembolsado</h2>
+    <div class="valor" id="totalReembolsado">
+      R$ 0
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Saldo Pendente</h2>
+    <div class="valor" id="saldoPendente">
+      R$ 0
+    </div>
+  </div>
+
+</div>
+
+<div class="card" style="margin-top:20px;">
+
+  <h2>Registrar Pagamento da Loja</h2>
+
+  <select id="pessoa">
+    <option value="Dan">Dan</option>
+    <option value="Rafa">Rafa</option>
+  </select>
+
+  <input type="number" id="valor" placeholder="Valor pago">
+
+  <input type="text" id="descricao" placeholder="Descrição">
+
+  <button onclick="registrarPagamento()">
+    Registrar Pagamento
+  </button>
+
+</div>
+
+<div class="card" style="margin-top:20px;">
+  <h2>Resumo</h2>
+  <canvas id="grafico"></canvas>
+</div>
+
+<div class="card" style="margin-top:20px;">
+
+  <h2>Histórico de Reembolsos</h2>
+
+  <table>
+
+    <thead>
+      <tr>
+        <th>Pessoa</th>
+        <th>Valor</th>
+        <th>Descrição</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+
+    <tbody id="tabelaReembolsos"></tbody>
+
+  </table>
+
+</div>
+
+<script>
+
+const { createClient } = supabase;
+
+const client = createClient(
+  'COLE_SUA_URL',
+  'COLE_SUA_PUBLISHABLE_KEY'
+);
+
+let grafico;
+
+async function registrarPagamento() {
+
+  const pessoa = document.getElementById('pessoa').value;
+  const valor = document.getElementById('valor').value;
+  const descricao = document.getElementById('descricao').value;
+
+  const { error } = await client
+    .from('reembolsos')
+    .insert([
+      {
+        pessoa,
+        valor,
+        descricao
+      }
+    ]);
+
+  if (error) {
+    console.log(error);
+    alert('Erro ao registrar pagamento');
+    return;
+  }
+
+  alert('Pagamento registrado!');
+
+  document.getElementById('valor').value = '';
+  document.getElementById('descricao').value = '';
+
+  carregarDados();
+}
+
+async function carregarDados() {
+
+  const gastosResponse = await client
+    .from('gastos')
+    .select('*');
+
+  const reembolsosResponse = await client
+    .from('reembolsos')
+    .select('*');
+
+  const gastos = gastosResponse.data || [];
+  const reembolsos = reembolsosResponse.data || [];
+
+  atualizarCards(gastos, reembolsos);
+  atualizarTabela(reembolsos);
+  atualizarGrafico(gastos, reembolsos);
+}
+
+function atualizarCards(gastos, reembolsos) {
+
+  const totalInvestido = gastos.reduce((acc, item) => {
+    return acc + Number(item.valor);
+  }, 0);
+
+  const totalReembolsado = reembolsos.reduce((acc, item) => {
+    return acc + Number(item.valor);
+  }, 0);
+
+  const saldoPendente = totalInvestido - totalReembolsado;
+
+  document.getElementById('totalInvestido').innerText =
+    'R$ ' + totalInvestido.toLocaleString('pt-BR');
+
+  document.getElementById('totalReembolsado').innerText =
+    'R$ ' + totalReembolsado.toLocaleString('pt-BR');
+
+  document.getElementById('saldoPendente').innerText =
+    'R$ ' + saldoPendente.toLocaleString('pt-BR');
+}
+
+function atualizarTabela(reembolsos) {
+
+  const tabela = document.getElementById('tabelaReembolsos');
+
+  tabela.innerHTML = '';
+
+  reembolsos.forEach(item => {
+
+    tabela.innerHTML += `
+      <tr>
+        <td>${item.pessoa}</td>
+        <td>R$ ${Number(item.valor).toLocaleString('pt-BR')}</td>
+        <td>${item.descricao || ''}</td>
+        <td>${new Date(item.created_at).toLocaleDateString('pt-BR')}</td>
+      </tr>
+    `;
+
+  });
+}
+
+function atualizarGrafico(gastos, reembolsos) {
+
+  let totalDan = 0;
+  let totalRafa = 0;
+
+  let recebidoDan = 0;
+  let recebidoRafa = 0;
+
+  gastos.forEach(item => {
+
+    if (item.pessoa === 'Dan') {
+      totalDan += Number(item.valor);
+    }
+
+    if (item.pessoa === 'Rafa') {
+      totalRafa += Number(item.valor);
+    }
+
+  });
+
+  reembolsos.forEach(item => {
+
+    if (item.pessoa === 'Dan') {
+      recebidoDan += Number(item.valor);
+    }
+
+    if (item.pessoa === 'Rafa') {
+      recebidoRafa += Number(item.valor);
+    }
+
+  });
+```
