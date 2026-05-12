@@ -200,7 +200,7 @@ async function registrarPagamento() {
 }
 
 async function carregarDados() {
-
+ console.log('ENTROU');
   const gastosResponse = await client
     .from('gastos')
     .select('*');
