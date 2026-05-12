@@ -87,7 +87,7 @@
     </select>
 
     <input id="categoria" placeholder="Categoria">
-
+    <input id="parcelas" type="number" placeholder="Parcelas" value="1">
     <input id="descricao" placeholder="Descrição">
 
     <button onclick="salvar()">
@@ -109,6 +109,7 @@
           <th>Pessoa</th>
           <th>Categoria</th>
           <th>Descrição</th>
+          <th>Parcelas</th>
         </tr>
       </thead>
 
@@ -133,6 +134,8 @@ async function salvar() {
   const pessoa = document.getElementById('pessoa').value;
   const categoria = document.getElementById('categoria').value;
   const descricao = document.getElementById('descricao').value;
+  const parcelas = parseInt(document.getElementById('parcelas').value || 1);
+  const valorParcela = valor / parcelas;
 
   const { error } = await client
     .from('gastos')
@@ -141,7 +144,9 @@ async function salvar() {
         valor,
         pessoa,
         categoria,
-        descricao
+        descricao,
+        parcelas,
+        valor_parcela: valorParcela
       }
     ]);
 
@@ -189,6 +194,7 @@ function carregarTabela(data) {
         <td>${gasto.pessoa}</td>
         <td>${gasto.categoria}</td>
         <td>${gasto.descricao || ''}</td>
+        <td>${gasto.parcelas || 1}x</td>
       </tr>
     `;
 
