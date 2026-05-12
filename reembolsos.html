@@ -209,6 +209,9 @@ async function carregarDados() {
     .from('reembolsos')
     .select('*');
 
+  console.log('GASTOS:', gastosResponse);
+  console.log('REEMBOLSOS:', reembolsosResponse);
+
   const gastos = gastosResponse.data || [];
   const reembolsos = reembolsosResponse.data || [];
 
