@@ -385,7 +385,17 @@ function atualizarPrevisao(data) {
 }
 
 async function avancarParcela(id) {
-
+  await client
+  .from('movimentacoes')
+  .insert([
+    {
+      tipo: 'saida',
+      categoria: 'parcelas',
+      descricao: data.descricao,
+      valor: data.valor_parcela || data.valor,
+      forma_pagamento: 'credito'
+    }
+  ]);
   const { data } = await client
     .from('gastos')
     .select('*')
