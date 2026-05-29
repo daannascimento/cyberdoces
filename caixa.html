@@ -235,6 +235,20 @@ const client = createClient(
   'sb_publishable_yAeRrVsq2u0c3Sqv2-vg9g_669u8lLw'
 );
 
+  (async () => {
+
+  const {
+    data: { session }
+  } = await client.auth.getSession();
+
+  if(!session){
+
+    window.location.href = 'login.html';
+
+  }
+
+})();
+
 let grafico;
 
 async function salvarMovimentacao() {
