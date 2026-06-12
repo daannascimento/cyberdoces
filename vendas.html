@@ -143,7 +143,7 @@ th{
 
   <table>
 
-```
+
 <thead>
 
   <tr>
@@ -270,8 +270,9 @@ function atualizarTabela(data){
       <tr>
 
         <td>
-          ${new Date(item.data_venda)
-            .toLocaleDateString('pt-BR')}
+          ${item.data_venda
+            ? item.data_venda.split('-').reverse().join('/')
+            : ''}
         </td>
 
         <td>
