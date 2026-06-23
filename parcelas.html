@@ -143,6 +143,7 @@
     R$ 0
   </div>
 </div>
+</div>
 
   <h3>Filtros</h3>
 
@@ -167,6 +168,7 @@
   </select>
 
 </div>
+
 
 <div class="card">
 
@@ -292,7 +294,10 @@ function atualizarTabela(data) {
         </td>
 
         <td>
-          R$ ${Number(gasto.valor_parcela || gasto.valor).toLocaleString('pt-BR')}
+            R$ ${Number(
+                gasto.valor_parcela ||
+                (gasto.valor / (gasto.parcelas || 1))
+              ).toLocaleString('pt-BR')}
         </td>
 
         <td class="${gasto.quitado ? 'status-quitado' : 'status-aberto'}">
@@ -482,7 +487,7 @@ async function avancarParcela(id) {
 
   carregarParcelas();
 }
-
+carregarParcelas();
 </script>
 
 </body>
