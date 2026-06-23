@@ -334,32 +334,48 @@ function atualizarCards(data) {
   let totalDevido = 0;
 
   data.forEach(gasto => {
-  
+    
+
     const parcelas = gasto.parcelas || 1;
-  
-    if(parcelas > 1){
-  
-      const valorParcela =
-        Number(
-          gasto.valor_parcela ||
-          (gasto.valor / parcelas)
-        );
-  
+    if (parcelas > 1) {
+
+        const valorParcela =
+          Number(
+            gasto.valor_parcela ||
+            (gasto.valor / parcelas)
+          );
+      
+        const restantes =
+          parcelas -
+          (gasto.parcela_atual || 1) + 1;
+      
+        totalDevido +=
+          restantes * valorParcela;
+      
+      } else {
+      
+        totalDevido +=
+          Number(gasto.valor);
+      
+      }
+    const valorParcela =
+      Number(
+        gasto.valor_parcela ||
+        (gasto.valor / parcelas)
+      );
+
+    if (parcelas > 1 && !gasto.quitado) {
+
+      proximoFechamento += valorParcela;
+
       const restantes =
         parcelas -
         (gasto.parcela_atual || 1) + 1;
-  
-      totalDevido +=
+
+      dividaParcelada +=
         restantes * valorParcela;
-  
-    } else {
-  
-      totalDevido +=
-        Number(gasto.valor);
-  
+
     }
-  
-  });
 
     if (parcelas === 1) {
 
@@ -392,13 +408,6 @@ function atualizarCards(data) {
     'R$ ' +
     gastosVista.toLocaleString(
       'pt-BR'
-    );
-  document.getElementById(
-    'totalDevido'
-   ).innerText =
-    'R$ ' +
-    totalDevido.toLocaleString(
-    'pt-BR'
     );
 
 }
