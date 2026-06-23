@@ -138,6 +138,13 @@
 </div>
 
 <div class="card">
+    <h3>Total Devido Loja</h3>
+    <div class="valor" id="totalDevido">
+      R$ 0
+    </div>
+  </div>
+
+<div class="card">
   <h3>Gastos à Vista</h3>
   <div class="valor" id="gastosVista">
     R$ 0
@@ -324,29 +331,35 @@ function atualizarCards(data) {
   let proximoFechamento = 0;
   let dividaParcelada = 0;
   let gastosVista = 0;
+  let totalDevido = 0;
 
   data.forEach(gasto => {
-
+  
     const parcelas = gasto.parcelas || 1;
-
-    const valorParcela =
-      Number(
-        gasto.valor_parcela ||
-        (gasto.valor / parcelas)
-      );
-
-    if (parcelas > 1 && !gasto.quitado) {
-
-      proximoFechamento += valorParcela;
-
+  
+    if(parcelas > 1){
+  
+      const valorParcela =
+        Number(
+          gasto.valor_parcela ||
+          (gasto.valor / parcelas)
+        );
+  
       const restantes =
         parcelas -
         (gasto.parcela_atual || 1) + 1;
-
-      dividaParcelada +=
+  
+      totalDevido +=
         restantes * valorParcela;
-
+  
+    } else {
+  
+      totalDevido +=
+        Number(gasto.valor);
+  
     }
+  
+  });
 
     if (parcelas === 1) {
 
@@ -379,6 +392,13 @@ function atualizarCards(data) {
     'R$ ' +
     gastosVista.toLocaleString(
       'pt-BR'
+    );
+  document.getElementById(
+    'totalDevido'
+   ).innerText =
+    'R$ ' +
+    totalDevido.toLocaleString(
+    'pt-BR'
     );
 
 }
