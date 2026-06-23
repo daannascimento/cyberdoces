@@ -124,32 +124,25 @@
 <div class="grid">
 
   <div class="card">
-    <h3>Total Mensal</h3>
-
-    <div class="valor" id="totalMensal">
-      R$ 0
-    </div>
+  <h3>Próximo Fechamento</h3>
+  <div class="valor" id="proximoFechamento">
+    R$ 0
   </div>
-
-  <div class="card">
-    <h3>Parcelas Abertas</h3>
-
-    <div class="valor" id="parcelasAbertas">
-      0
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>Parcelas Quitadas</h3>
-
-    <div class="valor" id="parcelasQuitadas">
-      0
-    </div>
-  </div>
-
 </div>
 
 <div class="card">
+  <h3>Dívida Parcelada</h3>
+  <div class="valor" id="dividaParcelada">
+    R$ 0
+  </div>
+</div>
+
+<div class="card">
+  <h3>Gastos à Vista</h3>
+  <div class="valor" id="gastosVista">
+    R$ 0
+  </div>
+</div>
 
   <h3>Filtros</h3>
 
@@ -323,36 +316,66 @@ function atualizarTabela(data) {
 
 function atualizarCards(data) {
 
-  let totalMensal = 0;
-  let abertas = 0;
-  let quitadas = 0;
+  let proximoFechamento = 0;
+  let dividaParcelada = 0;
+  let gastosVista = 0;
 
   data.forEach(gasto => {
 
-    if (gasto.quitado) {
+    const parcelas = gasto.parcelas || 1;
 
-      quitadas++;
-
-    } else {
-
-      abertas++;
-
-      totalMensal += Number(
-        gasto.valor_parcela || gasto.valor
+    const valorParcela =
+      Number(
+        gasto.valor_parcela ||
+        (gasto.valor / parcelas)
       );
+
+    if (parcelas > 1 && !gasto.quitado) {
+
+      proximoFechamento += valorParcela;
+
+      const restantes =
+        parcelas -
+        (gasto.parcela_atual || 1) + 1;
+
+      dividaParcelada +=
+        restantes * valorParcela;
+
+    }
+
+    if (parcelas === 1) {
+
+      gastosVista +=
+        Number(gasto.valor);
 
     }
 
   });
 
-  document.getElementById('totalMensal').innerText =
-    'R$ ' + totalMensal.toLocaleString('pt-BR');
+  document.getElementById(
+    'proximoFechamento'
+  ).innerText =
+    'R$ ' +
+    proximoFechamento.toLocaleString(
+      'pt-BR'
+    );
 
-  document.getElementById('parcelasAbertas').innerText =
-    abertas;
+  document.getElementById(
+    'dividaParcelada'
+  ).innerText =
+    'R$ ' +
+    dividaParcelada.toLocaleString(
+      'pt-BR'
+    );
 
-  document.getElementById('parcelasQuitadas').innerText =
-    quitadas;
+  document.getElementById(
+    'gastosVista'
+  ).innerText =
+    'R$ ' +
+    gastosVista.toLocaleString(
+      'pt-BR'
+    );
+
 }
 
 function atualizarPrevisao(data) {
@@ -365,7 +388,9 @@ function atualizarPrevisao(data) {
   const previsao = {};
 
   data.forEach(gasto => {
-
+    if ((gasto.parcelas || 1) <= 1) {
+      return;
+    }
     if (gasto.quitado) return;
 
     const parcelasRestantes =
@@ -373,7 +398,7 @@ function atualizarPrevisao(data) {
       (gasto.parcela_atual || 1) + 1;
 
     const valor =
-      Number(gasto.valor_parcela || gasto.valor);
+      Number(gasto.valor_parcela || (gasto.valor / (gasto.parcelas || 1)));
 
     for (let i = 0; i < parcelasRestantes; i++) {
 
@@ -408,24 +433,33 @@ function atualizarPrevisao(data) {
 }
 
 async function avancarParcela(id) {
-  await client
-  .from('movimentacoes')
-  .insert([
-    {
-      tipo: 'saida',
-      categoria: 'parcelas',
-      descricao: data.descricao,
-      valor: data.valor_parcela || data.valor,
-      forma_pagamento: 'credito'
-    }
-  ]);
+
   const { data } = await client
     .from('gastos')
     .select('*')
     .eq('id', id)
     .single();
 
-  let parcelaAtual = data.parcela_atual || 1;
+  const valorParcela =
+    Number(
+      data.valor_parcela ||
+      (data.valor / (data.parcelas || 1))
+    );
+
+  await client
+    .from('movimentacoes')
+    .insert([
+      {
+        tipo: 'saida',
+        categoria: 'parcelas',
+        descricao: data.descricao,
+        valor: valorParcela,
+        forma_pagamento: 'credito'
+      }
+    ]);
+
+  let parcelaAtual =
+    data.parcela_atual || 1;
 
   parcelaAtual++;
 
@@ -448,8 +482,6 @@ async function avancarParcela(id) {
 
   carregarParcelas();
 }
-
-carregarParcelas();
 
 </script>
 
