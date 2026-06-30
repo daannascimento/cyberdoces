@@ -1,0 +1,49 @@
+:root{
+
+    --sidebar-width:250px;
+    --sidebar-collapse:85px;
+
+}
+
+body{
+
+    margin:0;
+    background:#f5f7fb;
+
+}
+
+.main{
+
+    margin-left:var(--sidebar-width);
+
+    width:calc(100% - var(--sidebar-width));
+
+    min-height:100vh;
+
+    transition:all .25s ease;
+
+    padding:30px;
+
+    box-sizing:border-box;
+
+}
+
+.main.collapsed{
+
+    margin-left:var(--sidebar-collapse);
+
+    width:calc(100% - var(--sidebar-collapse));
+
+}
+
+.container{
+
+    width:100%;
+
+    max-width:100%;
+
+    margin:0 auto;
+
+    box-sizing:border-box;
+
+}

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Controle de Parcelas</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/cards.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+
+</head>
+
+<body>
+
+<div id="sidebar"></div>
+
+<div class="main">
+
+<div class="container">
+
+<h1>Controle de Parcelas</h1>
+
+<!-- KPIs -->
+
+<div class="kpi-grid">
+
+    <div class="card">
+
+        <h3>Próximo Fechamento</h3>
+
+        <div class="valor" id="proximoFechamento">
+            R$ 0,00
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Dívida Parcelada</h3>
+
+        <div class="valor" id="dividaParcelada">
+            R$ 0,00
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Total Devido Loja</h3>
+
+        <div class="valor" id="totalDevido">
+            R$ 0,00
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Gastos à Vista</h3>
+
+        <div class="valor" id="gastosVista">
+            R$ 0,00
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FILTROS -->
+
+<div class="card">
+
+<h3>Filtros</h3>
+
+<div class="grid-2">
+
+<select id="filtroPessoa" onchange="carregarParcelas()">
+
+    <option value="">Todas Pessoas</option>
+    <option value="Dan">Dan</option>
+    <option value="Rafa">Rafa</option>
+
+</select>
+
+<select id="filtroStatus" onchange="carregarParcelas()">
+
+    <option value="">Todos Status</option>
+    <option value="aberto">Abertos</option>
+    <option value="quitado">Quitados</option>
+
+</select>
+
+</div>
+
+</div>
+
+<!-- PREVISÃO -->
+
+<div class="card">
+
+<h3>Previsão Financeira</h3>
+
+<div class="table-responsive">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Mês</th>
+<th>Total Previsto</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tabelaPrevisao"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- TABELA -->
+
+<div class="card">
+
+<h3>Parcelas</h3>
+
+<div class="table-responsive">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Descrição</th>
+<th>Pessoa</th>
+<th>Valor Total</th>
+<th>Parcela</th>
+<th>Valor Parcela</th>
+<th>Status</th>
+<th>Ações</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tabelaParcelas"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/menu.js"></script>
+<script src="../js/components.js"></script>
+<script src="../js/services.js"></script>
+<script src="../js/dashboardService.js"></script>
+
+<script src="../js/parcelas.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Vendas</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/cards.css">
+  <link rel="stylesheet" href="../css/tables.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+
+</head>
+
+<body>
+
+  <div id="sidebar"></div>
+
+  <div class="main">
+
+    <div class="container">
+
+      <h1>Dashboard de Vendas</h1>
+    </div>
+  
+
+  <div class="kpi-grid">
+
+    <div class="card">
+      <h3>Faturamento Hoje</h3>
+      <div class="valor verde" id="faturamentoHoje">
+        R$ 0,00
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Vendas Hoje</h3>
+      <div class="valor" id="vendasHoje">
+        0
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Ticket Médio</h3>
+      <div class="valor" id="ticketMedio">
+        R$ 0,00
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Faturamento Acumulado</h3>
+      <div class="valor verde" id="faturamentoMes">
+        R$ 0,00
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h3>Histórico de Vendas</h3>
+
+    <table>
+
+
+      <thead>
+
+        <tr>
+          <th>Data</th>
+          <th>Vendas</th>
+          <th>Faturamento</th>
+          <th>Ticket Médio</th>
+        </tr>
+
+      </thead>
+
+      <tbody id="tabelaVendas"></tbody>
+    </table>
+
+  </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/menu.js"></script>
+  <script src="../js/components.js"></script>
+  <script src="../js/services.js"></script>
+  <script src="../js/dashboardService.js"></script>
+
+  <script src="../js/vendas.js"></script>
+</body>
+
+</html>

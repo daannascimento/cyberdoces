@@ -1,106 +1,59 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
-<title>Login</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
+    <title>Loja Dan & Rafa</title>
 
-body{
-  font-family:Arial;
-  background:#f5f5f5;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
-
-.card{
-  background:white;
-  padding:30px;
-  border-radius:10px;
-  width:350px;
-}
-
-input,button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  box-sizing:border-box;
-}
-
-button{
-  cursor:pointer;
-}
-
-</style>
+    <link rel="stylesheet" href="../cyberdoces-1/css/global.css">
+    <link rel="stylesheet" href="../cyberdoces-1/css/login.css">
 
 </head>
 
 <body>
 
-<div class="card">
+    <div class="login-container">
 
-<h2>Entrar</h2>
+        <div class="login-card">
 
-<input
-type="email"
-id="email"
-placeholder="E-mail">
+            <div class="logo">
 
-<input
-type="password"
-id="senha"
-placeholder="Senha">
+                🍬
 
-<button onclick="login()">
-Entrar
-</button>
+                <h1>Loja Dan & Rafa</h1>
 
-</div>
+                <p>Sistema de Gestão</p>
 
-<script>
+            </div>
 
-const { createClient } = supabase;
+            <input id="email" type="email" placeholder="E-mail">
 
-const client = createClient(
-  'https://ewiejygqzrgrwhkielln.supabase.co',
-  'sb_publishable_yAeRrVsq2u0c3Sqv2-vg9g_669u8lLw'
-);
+            <input id="senha" type="password" placeholder="Senha">
 
-async function login(){
+            <button id="btnLogin">
 
-  const email =
-    document.getElementById('email').value;
+                Entrar
 
-  const senha =
-    document.getElementById('senha').value;
+            </button>
 
-  const { error } =
-    await client.auth.signInWithPassword({
+            <div id="erro" class="erro"></div>
 
-      email,
-      password: senha
+        </div>
 
-    });
+    </div>
 
-  if(error){
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    alert(error.message);
-
-    return;
-  }
-
-  window.location.href = 'index.html';
-
-}
-
-</script>
+    <script src="../cyberdoces-1/js/supabase.js"></script>
+    <script src="../cyberdoces-1/js/login.js"></script>
 
 </body>
+
 </html>

@@ -1,0 +1,313 @@
+/* ==========================================================
+   CARDS
+========================================================== */
+
+.card{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:22px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.05);
+
+    transition:.25s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 15px 30px rgba(0,0,0,.08);
+
+}
+
+
+/* ===========================
+      CARD HEADER
+=========================== */
+
+.card-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+.card-header h3{
+
+    margin:0;
+
+    font-size:18px;
+
+}
+
+.card-header small{
+
+    color:#6b7280;
+
+}
+
+
+/* ===========================
+      KPI CARD
+=========================== */
+
+.kpi-card{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.kpi-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.kpi-title{
+
+    font-size:14px;
+
+    color:#6b7280;
+
+}
+
+.kpi-value{
+
+    margin-top:8px;
+
+    font-size:32px;
+
+    font-weight:700;
+
+    color:#111827;
+
+}
+
+.kpi-subtitle{
+
+    margin-top:8px;
+
+    font-size:13px;
+
+    color:#9ca3af;
+
+}
+
+.kpi-icon{
+
+    width:65px;
+
+    height:65px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:28px;
+
+    color:white;
+
+}
+
+
+/* ===========================
+      CORES
+=========================== */
+
+.icon-blue{
+
+    background:#2563eb;
+
+}
+
+.icon-green{
+
+    background:#16a34a;
+
+}
+
+.icon-red{
+
+    background:#dc2626;
+
+}
+
+.icon-orange{
+
+    background:#ea580c;
+
+}
+
+.icon-purple{
+
+    background:#9333ea;
+
+}
+
+.icon-pink{
+
+    background:#db2777;
+
+}
+
+.icon-cyan{
+
+    background:#0891b2;
+
+}
+
+
+/* ===========================
+      CARD PEQUENO
+=========================== */
+
+.card-small{
+
+    padding:15px;
+
+}
+
+
+/* ===========================
+      CARD GRANDE
+=========================== */
+
+.card-large{
+
+    min-height:430px;
+
+}
+
+
+/* ===========================
+      CARD MÉDIO
+=========================== */
+
+.card-medium{
+
+    min-height:260px;
+
+}
+
+
+/* ===========================
+      ALERTAS
+=========================== */
+
+.alert-card{
+
+    display:flex;
+
+    gap:15px;
+
+    align-items:flex-start;
+
+    padding:15px;
+
+    border-left:5px solid #2563eb;
+
+    border-radius:8px;
+
+    background:#f8fafc;
+
+}
+
+.alert-card.success{
+
+    border-left-color:#16a34a;
+
+}
+
+.alert-card.warning{
+
+    border-left-color:#f59e0b;
+
+}
+
+.alert-card.danger{
+
+    border-left-color:#dc2626;
+
+}
+
+.alert-icon{
+
+    font-size:26px;
+
+}
+
+.alert-text{
+
+    flex:1;
+
+}
+
+.alert-title{
+
+    font-weight:bold;
+
+    margin-bottom:5px;
+
+}
+
+.alert-description{
+
+    color:#6b7280;
+
+    font-size:14px;
+
+}
+
+
+/* ===========================
+      RESPONSIVO
+=========================== */
+
+@media(max-width:768px){
+
+    .kpi-card{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:15px;
+
+    }
+
+    .kpi-icon{
+
+        width:55px;
+
+        height:55px;
+
+        font-size:22px;
+
+    }
+
+    .kpi-value{
+
+        font-size:26px;
+
+    }
+
+}

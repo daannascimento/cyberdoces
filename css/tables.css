@@ -1,0 +1,133 @@
+/* ===========================================
+   TABELAS
+=========================================== */
+
+.table-responsive{
+
+    overflow:auto;
+
+}
+
+.table-title{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+.table-title h3{
+
+    margin:0;
+
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    background:white;
+
+}
+
+thead{
+
+    background:#f8fafc;
+
+}
+
+th{
+
+    font-weight:600;
+
+    color:#374151;
+
+}
+
+tbody tr{
+
+    transition:.2s;
+
+}
+
+tbody tr:hover{
+
+    background:#eff6ff;
+
+}
+
+td{
+
+    vertical-align:middle;
+
+}
+
+.numero{
+
+    text-align:right;
+
+}
+
+.centralizado{
+
+    text-align:center;
+
+}
+
+.status{
+
+    display:inline-block;
+
+    padding:5px 12px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+}
+
+.status-aberto{
+
+    background:#fef3c7;
+
+    color:#92400e;
+
+}
+
+.status-quitado{
+
+    background:#dcfce7;
+
+    color:#166534;
+
+}
+
+.status-atrasado{
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+}
+
+.acoes{
+
+    display:flex;
+
+    gap:8px;
+
+}
+
+.acoes button{
+
+    padding:6px 10px;
+
+}
