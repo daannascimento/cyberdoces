@@ -31,62 +31,84 @@
 
       <h1>Dashboard de Vendas</h1>
     </div>
-  
-
-  <div class="kpi-grid">
-
     <div class="card">
-      <h3>Faturamento Hoje</h3>
-      <div class="valor verde" id="faturamentoHoje">
-        R$ 0,00
+
+      <div class="grid-2">
+
+        <div>
+
+          <label>Ano</label>
+
+          <select id="filtroAno"></select>
+
+        </div>
+
+        <div>
+
+          <label>Mês</label>
+
+          <select id="filtroMes"></select>
+
+        </div>
+
       </div>
+
+    </div>
+
+    <div class="kpi-grid">
+
+      <div class="card">
+        <h3>Faturamento Hoje</h3>
+        <div class="valor verde" id="faturamentoHoje">
+          R$ 0,00
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Vendas Hoje</h3>
+        <div class="valor" id="vendasHoje">
+          0
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Ticket Médio</h3>
+        <div class="valor" id="ticketMedio">
+          R$ 0,00
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Faturamento Acumulado</h3>
+        <div class="valor verde" id="faturamentoMes">
+          R$ 0,00
+        </div>
+      </div>
+
     </div>
 
     <div class="card">
-      <h3>Vendas Hoje</h3>
-      <div class="valor" id="vendasHoje">
-        0
-      </div>
+
+      <h3>Histórico de Vendas</h3>
+
+      <table>
+
+
+        <thead>
+
+          <tr>
+            <th>Data</th>
+            <th>Vendas</th>
+            <th>Faturamento</th>
+            <th>Ticket Médio</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="tabelaVendas"></tbody>
+      </table>
+
     </div>
-
-    <div class="card">
-      <h3>Ticket Médio</h3>
-      <div class="valor" id="ticketMedio">
-        R$ 0,00
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Faturamento Acumulado</h3>
-      <div class="valor verde" id="faturamentoMes">
-        R$ 0,00
-      </div>
-    </div>
-
-  </div>
-
-  <div class="card">
-
-    <h3>Histórico de Vendas</h3>
-
-    <table>
-
-
-      <thead>
-
-        <tr>
-          <th>Data</th>
-          <th>Vendas</th>
-          <th>Faturamento</th>
-          <th>Ticket Médio</th>
-        </tr>
-
-      </thead>
-
-      <tbody id="tabelaVendas"></tbody>
-    </table>
-
-  </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
