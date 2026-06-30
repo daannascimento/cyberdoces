@@ -70,15 +70,15 @@ async function carregarParcelas() {
 
 /* ========================================================== */
 
-function atualizarCards(gastos){
+function atualizarCards(gastos) {
 
-    let proximoFechamento=0;
+    let proximoFechamento = 0;
 
-    let dividaParcelada=0;
+    let dividaParcelada = 0;
 
-    let gastosVista=0;
+    let gastosVista = 0;
 
-    gastos.forEach(g=>{
+    gastos.forEach(g => {
 
         const parcelas =
             g.parcelas || 1;
@@ -89,27 +89,27 @@ function atualizarCards(gastos){
         const valorParcela =
             Number(
                 g.valor_parcela ||
-                (g.valor/parcelas)
+                (g.valor / parcelas)
             );
 
-        if(g.quitado)
+        if (g.quitado)
             return;
 
-        if(parcelas>1){
+        if (parcelas > 1) {
 
             proximoFechamento +=
                 valorParcela;
 
             const restantes =
                 parcelas -
-                parcelaAtual +1;
+                parcelaAtual + 1;
 
             dividaParcelada +=
                 restantes *
                 valorParcela;
 
         }
-        else{
+        else {
 
             gastosVista +=
                 Number(g.valor);
@@ -137,18 +137,18 @@ function atualizarCards(gastos){
 
 /* ========================================================== */
 
-function atualizarPrevisao(gastos){
+function atualizarPrevisao(gastos) {
 
     const tabela =
         byId("tabelaPrevisao");
 
-    tabela.innerHTML="";
+    tabela.innerHTML = "";
 
-    const previsao={};
+    const previsao = {};
 
-    gastos.forEach(g=>{
+    gastos.forEach(g => {
 
-        if(g.quitado)
+        if (g.quitado)
             return;
 
         const parcelas =
@@ -160,39 +160,39 @@ function atualizarPrevisao(gastos){
         const valor =
             Number(
                 g.valor_parcela ||
-                (g.valor/parcelas)
+                (g.valor / parcelas)
             );
 
         const restantes =
-            parcelas-atual+1;
+            parcelas - atual + 1;
 
-        if(parcelas===1){
+        if (parcelas === 1) {
 
             const chave =
                 mesAno(new Date());
 
             previsao[chave] =
-                (previsao[chave]||0)+
+                (previsao[chave] || 0) +
                 Number(g.valor);
 
             return;
 
         }
 
-        for(let i=0;i<restantes;i++){
+        for (let i = 0; i < restantes; i++) {
 
             const data =
                 new Date();
 
             data.setMonth(
-                data.getMonth()+i
+                data.getMonth() + i
             );
 
             const chave =
                 mesAno(data);
 
             previsao[chave] =
-                (previsao[chave]||0)+
+                (previsao[chave] || 0) +
                 valor;
 
         }
@@ -200,9 +200,9 @@ function atualizarPrevisao(gastos){
     });
 
     Object.entries(previsao)
-    .forEach(([mes,total])=>{
+        .forEach(([mes, total]) => {
 
-        tabela.innerHTML +=`
+            tabela.innerHTML += `
 
         <tr>
 
@@ -214,20 +214,20 @@ function atualizarPrevisao(gastos){
 
         `;
 
-    });
+        });
 
 }
 
 /* ========================================================== */
 
-function atualizarTabela(gastos){
+function atualizarTabela(gastos) {
 
     const tabela =
         byId("tabelaParcelas");
 
-    tabela.innerHTML="";
+    tabela.innerHTML = "";
 
-    gastos.forEach(g=>{
+    gastos.forEach(g => {
 
         const parcelas =
             g.parcelas || 1;
@@ -235,14 +235,14 @@ function atualizarTabela(gastos){
         const valorParcela =
             Number(
                 g.valor_parcela ||
-                (g.valor/parcelas)
+                (g.valor / parcelas)
             );
 
-        tabela.innerHTML +=`
+        tabela.innerHTML += `
 
         <tr>
 
-            <td>${g.descricao||""}</td>
+            <td>${g.descricao || ""}</td>
 
             <td>${g.pessoa}</td>
 
@@ -250,7 +250,7 @@ function atualizarTabela(gastos){
 
             <td>
 
-                ${g.parcela_atual||1}/${parcelas}
+                ${g.parcela_atual || 1}/${parcelas}
 
             </td>
 
@@ -263,23 +263,22 @@ function atualizarTabela(gastos){
             <td>
 
                 ${g.quitado
-                    ? "Quitado"
-                    : "Aberto"}
+                ? "Quitado"
+                : "Aberto"}
 
             </td>
 
             <td>
 
-                ${
-                    g.quitado
-                    ? "-"
-                    :
-                    `<button onclick="avancarParcela('${g.id}')">
+                ${g.quitado
+                ? "-"
+                :
+                `<button onclick="avancarParcela('${g.id}')">
 
                         Próxima
 
                     </button>`
-                }
+            }
 
             </td>
 
@@ -293,10 +292,10 @@ function atualizarTabela(gastos){
 
 /* ========================================================== */
 
-async function avancarParcela(id){
+async function avancarParcela(id) {
 
     const { data } =
-    await GastoService.buscar(id);
+        await GastoService.buscar(id);
 
     const parcelas =
         data.parcelas || 1;
@@ -304,51 +303,45 @@ async function avancarParcela(id){
     const valorParcela =
         Number(
             data.valor_parcela ||
-            (data.valor/parcelas)
+            (data.valor / parcelas)
         );
 
     await CaixaService.inserir({
 
-        tipo:"saida",
+        tipo: "saida",
 
-        categoria:"parcelas",
+        categoria: "parcelas",
 
-        descricao:data.descricao,
+        descricao: data.descricao,
 
-        valor:valorParcela,
+        valor: valorParcela,
 
-        forma_pagamento:"credito"
+        forma_pagamento: "credito"
 
     });
 
-    let atual =
-        data.parcela_atual || 1;
+    let atual = data.parcela_atual || 1;
+    let quitado = false;
 
-    atual++;
+    if (atual < parcelas) {
 
-    let quitado=false;
+        // Avança para a próxima parcela
+        atual++;
 
-    if(atual>=parcelas){
+    } else {
 
-        atual=parcelas;
-
-        quitado=true;
+        // Estava na última parcela e ela acabou de ser paga
+        quitado = true;
 
     }
 
-    await GastoService.atualizar(
+    await GastoService.atualizar(id, {
 
-        id,
+        parcela_atual: atual,
 
-        {
+        quitado
 
-            parcela_atual:atual,
-
-            quitado
-
-        }
-
-    );
+    });
 
     toast("Parcela atualizada!");
 
@@ -358,7 +351,7 @@ async function avancarParcela(id){
 
 /* ========================================================== */
 
-function mesAno(data){
+function mesAno(data) {
 
     return data.toLocaleString(
 
@@ -366,9 +359,9 @@ function mesAno(data){
 
         {
 
-            month:"long",
+            month: "long",
 
-            year:"numeric"
+            year: "numeric"
 
         }
 
